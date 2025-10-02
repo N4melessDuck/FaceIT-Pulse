@@ -7,6 +7,17 @@
 
     <!-- Hero Section -->
     <section class="hero-section">
+      <!-- Video Background -->
+      <div class="video-background">
+        <iframe
+          src="https://www.youtube.com/embed/omlBmzZK800?autoplay=1&mute=1&loop=1&playlist=omlBmzZK800&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="video-overlay"></div>
+      
       <div class="hero-content">
         <h1 class="hero-title">{{ t('landing.hero.title') }}</h1>
         <p class="hero-subtitle">
@@ -222,10 +233,68 @@ const howItWorksSteps = computed(() => tm('landing.howItWorks.steps') as Array<{
   justify-content: center;
   padding: 2rem;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Video Background */
+.video-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.video-background::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(15, 23, 42, 0.8) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-background iframe {
+  width: 100vw;
+  height: 56.25vw; /* 16:9 Aspect Ratio */
+  min-height: 100vh;
+  min-width: 177.77vh; /* 16:9 Aspect Ratio */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(to bottom, 
+      rgba(15, 23, 42, 0.85) 0%, 
+      rgba(15, 23, 42, 0.85) 60%,
+      rgba(15, 23, 42, 0.95) 85%,
+      rgba(15, 23, 42, 1) 100%
+    ),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.3) 0%, rgba(30, 41, 59, 0.3) 100%);
+  z-index: 1;
 }
 
 .hero-content {
   max-width: 800px;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-title {
