@@ -91,8 +91,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // Computed URL для OBS
   const overlayUrl = computed(() => {
-    const basePath = import.meta.env.BASE_URL || '/'
-    const baseUrl = window.location.origin + basePath + 'overlay'
+    const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') // Remove trailing slash
+    const baseUrl = window.location.origin + basePath + '/overlay'
     const params = new URLSearchParams()
 
     // Обязательный параметр - nickname
@@ -137,8 +137,8 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // Computed URL для Live Match виджета
   const liveMatchUrl = computed(() => {
-    const basePath = import.meta.env.BASE_URL || '/'
-    const baseUrl = window.location.origin + basePath + 'live-match'
+    const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') // Remove trailing slash
+    const baseUrl = window.location.origin + basePath + '/live-match'
     const params = new URLSearchParams()
 
     // Обязательный параметр - nickname
