@@ -1,16 +1,18 @@
 <template>
-  <!-- Показываем только при наличии активного матча -->
-  <div 
-    v-if="playerStore.currentMatch && !playerStore.error && !playerStore.isLoading"
-    class="live-match-container animate-fade-in"
-    :style="{ opacity: settingsStore.settings.liveMatch.opacity / 100 }"
-  >
-    <LiveMatchCard />
-  </div>
+  <!-- Показываем только при наличии активного матча и в соответствии с циклом показа/скрытия -->
+  <Transition name="fade">
+    <div 
+      v-if="isVisible && playerStore.currentMatch && !playerStore.error && !playerStore.isLoading"
+      class="live-match-container"
+      :style="{ opacity: settingsStore.settings.liveMatch.opacity / 100 }"
+    >
+      <LiveMatchCard />
+    </div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useSettingsStore } from '@/stores/settings'
 import LiveMatchCard from '@/components/LiveMatchCard.vue'
@@ -18,7 +20,48 @@ import LiveMatchCard from '@/components/LiveMatchCard.vue'
 const playerStore = usePlayerStore()
 const settingsStore = useSettingsStore()
 
-let checkInterval: number | null = null
+const isVisible = ref(true)
+const visibilityTimeouts: number[] = []
+
+// Функция для управления циклом видимости
+function startVisibilityCycle() {
+  const showDuration = settingsStore.settings.liveMatch.showDuration * 1000
+  const hideDuration = settingsStore.settings.liveMatch.hideDuration * 1000
+  
+  // Начинаем с показа карточки
+  isVisible.value = true
+  
+  // Функция переключения видимости
+  async function toggleVisibility() {
+    isVisible.value = false
+    
+    // После hideDuration обновляем данные и снова показываем
+    const hideTimeout = window.setTimeout(async () => {
+      // Обновляем данные матча перед показом
+      await playerStore.checkForOngoingMatch()
+      
+      isVisible.value = true
+      
+      // И через showDuration снова скрываем
+      const showTimeout = window.setTimeout(toggleVisibility, showDuration)
+      visibilityTimeouts.push(showTimeout)
+    }, hideDuration)
+    visibilityTimeouts.push(hideTimeout)
+  }
+  
+  // Первое скрытие после showDuration
+  const initialTimeout = window.setTimeout(toggleVisibility, showDuration)
+  visibilityTimeouts.push(initialTimeout)
+  
+  console.log(`👁️ Visibility cycle: show ${showDuration / 1000}s, hide ${hideDuration / 1000}s`)
+  console.log(`🔄 Match data will refresh before each show`)
+}
+
+// Очистка всех таймеров
+function cleanupTimers() {
+  visibilityTimeouts.forEach(timeout => clearTimeout(timeout))
+  visibilityTimeouts.length = 0
+}
 
 onMounted(async () => {
   // Load settings from URL parameters
@@ -30,21 +73,14 @@ onMounted(async () => {
     
     // Initial check for ongoing match
     await playerStore.checkForOngoingMatch()
-    
-    // Setup auto-refresh interval
-    const updateInterval = settingsStore.settings.liveMatch.updateInterval
-    checkInterval = window.setInterval(() => {
-      playerStore.checkForOngoingMatch()
-    }, updateInterval)
 
-    console.log(`🔄 Live match auto-refresh: every ${updateInterval / 1000}s`)
+    // Start visibility cycle (будет автоматически обновлять данные перед каждым показом)
+    startVisibilityCycle()
   }
 })
 
 onUnmounted(() => {
-  if (checkInterval) {
-    clearInterval(checkInterval)
-  }
+  cleanupTimers()
 })
 </script>
 
@@ -141,6 +177,17 @@ onUnmounted(() => {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Fade transition for visibility cycle */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 /* No Match Screen */

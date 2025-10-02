@@ -140,22 +140,23 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
     try {
-      console.log('🔍 Checking for ongoing match...')
-      const ongoingMatch = await faceitAPI.getOngoingMatch(user.value.id)
+      console.log('🔍 Checking for active match (ONGOING/READY)...')
+      const activeMatch = await faceitAPI.getOngoingMatch(user.value.id)
       
-      if (ongoingMatch) {
-        console.log('✅ Ongoing match found:', ongoingMatch.id)
+      if (activeMatch) {
+        const status = activeMatch.state === 'READY' ? 'Players connecting' : 'Match in progress'
+        console.log(`✅ Active match found [${activeMatch.state}]:`, activeMatch.id, `- ${status}`)
         console.log('📊 Loading stats for all players...')
         
         // Загружаем статистику всех игроков обеих команд
-        const matchWithStats = await loadMatchStats(ongoingMatch)
+        const matchWithStats = await loadMatchStats(activeMatch)
         currentMatch.value = matchWithStats
       } else {
-        console.log('⛔ No ongoing match')
+        console.log('⛔ No active match')
         currentMatch.value = null
       }
     } catch (err) {
-      console.error('❌ Failed to check for ongoing match:', err)
+      console.error('❌ Failed to check for active match:', err)
       currentMatch.value = null
     }
   }
@@ -164,8 +165,22 @@ export const usePlayerStore = defineStore('player', () => {
    * Загрузить статистику для всех игроков матча
    */
   async function loadMatchStats(match: any): Promise<OngoingMatchWithStats> {
-    const faction1Roster = match.teams.faction1.roster
-    const faction2Roster = match.teams.faction2.roster
+    // Загружаем детальную информацию о матче с вероятностью победы от FACEIT
+    let matchDetails
+    try {
+      const detailsResponse = await faceitAPI.getMatchDetailsV2(match.id)
+      matchDetails = detailsResponse.payload
+      console.log('📊 Win probability from FACEIT:', {
+        faction1: matchDetails.teams.faction1.stats?.winProbability,
+        faction2: matchDetails.teams.faction2.stats?.winProbability
+      })
+    } catch (error) {
+      console.warn('⚠️ Failed to get match details v2, using basic match data:', error)
+      matchDetails = match
+    }
+
+    const faction1Roster = matchDetails.teams.faction1.roster
+    const faction2Roster = matchDetails.teams.faction2.roster
 
     // Загружаем статистику всех игроков параллельно
     const [faction1WithStats, faction2WithStats] = await Promise.all([
@@ -181,24 +196,34 @@ export const usePlayerStore = defineStore('player', () => {
     const faction1WithDeviations = calculateDeviations(faction1WithStats, faction1AvgStats)
     const faction2WithDeviations = calculateDeviations(faction2WithStats, faction2AvgStats)
 
-    // Вычисляем вероятность победы
-    const winProbability = calculateWinProbability(faction1AvgStats, faction2AvgStats)
+    // Получаем реальную вероятность победы от FACEIT API (в формате 0.0-1.0)
+    const winProbabilityFromAPI = {
+      team1: matchDetails.teams.faction1.stats?.winProbability 
+        ? Math.round(matchDetails.teams.faction1.stats.winProbability * 100) 
+        : null,
+      team2: matchDetails.teams.faction2.stats?.winProbability 
+        ? Math.round(matchDetails.teams.faction2.stats.winProbability * 100) 
+        : null
+    }
 
     return {
-      ...match,
+      ...matchDetails,
       teams: {
         faction1: {
-          ...match.teams.faction1,
+          ...matchDetails.teams.faction1,
           roster: faction1WithDeviations,
           avgStats: faction1AvgStats
         },
         faction2: {
-          ...match.teams.faction2,
+          ...matchDetails.teams.faction2,
           roster: faction2WithDeviations,
           avgStats: faction2AvgStats
         }
       },
-      winProbability
+      // Используем реальную вероятность от FACEIT, если доступна
+      winProbability: (winProbabilityFromAPI.team1 && winProbabilityFromAPI.team2) 
+        ? winProbabilityFromAPI 
+        : undefined
     }
   }
 
@@ -232,8 +257,12 @@ export const usePlayerStore = defineStore('player', () => {
               avgDeaths: parseFloat(playerStats.lifetime.m19 || '0') / Math.max(parseInt(playerStats.lifetime.m1 || '1'), 1),
               avgAssists: parseFloat(playerStats.lifetime.m20 || '0') / Math.max(parseInt(playerStats.lifetime.m1 || '1'), 1),
               headshots: parseFloat(playerStats.lifetime.k8 || '0'),
-              kast: parseFloat(playerStats.lifetime.k20 || '70'),
-              entryRate: parseFloat(playerStats.lifetime.k19 || '5')
+              // k20 (KAST) приходит в десятичном формате (0.42 = 42%), умножаем на 100
+              kast: parseFloat(playerStats.lifetime.k20 || '0.7') * 100,
+              // k19 (Entry Rate) тоже может быть в десятичном формате, проверяем
+              entryRate: parseFloat(playerStats.lifetime.k19 || '0.05') < 1 
+                ? parseFloat(playerStats.lifetime.k19 || '0.05') * 100 
+                : parseFloat(playerStats.lifetime.k19 || '5')
             },
             recentMatches
           }
@@ -312,34 +341,6 @@ export const usePlayerStore = defineStore('player', () => {
       .join('')
 
     return recentHistory
-  }
-
-  /**
-   * Вычислить вероятность победы на основе статистики
-   */
-  function calculateWinProbability(team1Avg: any, team2Avg: any) {
-    const eloWeight = 0.4
-    const kdWeight = 0.25
-    const wrWeight = 0.25
-    const adrWeight = 0.1
-
-    const team1Score = 
-      (team1Avg.elo * eloWeight) + 
-      (team1Avg.kd * 500 * kdWeight) + 
-      (team1Avg.winRate * 10 * wrWeight) +
-      (team1Avg.adr * adrWeight)
-    
-    const team2Score = 
-      (team2Avg.elo * eloWeight) + 
-      (team2Avg.kd * 500 * kdWeight) + 
-      (team2Avg.winRate * 10 * wrWeight) +
-      (team2Avg.adr * adrWeight)
-    
-    const totalScore = team1Score + team2Score
-    return {
-      team1: Math.round((team1Score / totalScore) * 100),
-      team2: Math.round((team2Score / totalScore) * 100)
-    }
   }
 
   return {

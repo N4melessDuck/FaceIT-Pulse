@@ -52,7 +52,7 @@
             {{ t('landing.features.liveMatch.description') }}
           </p>
           <ul class="feature-list">
-            <li v-for="(item, index) in t('landing.features.liveMatch.list')" :key="index">{{ item }}</li>
+            <li v-for="(item, index) in liveMatchList" :key="index">{{ item }}</li>
           </ul>
         </div>
         <div class="feature-screenshot">
@@ -70,7 +70,7 @@
             {{ t('landing.features.stats.description') }}
           </p>
           <ul class="feature-list">
-            <li v-for="(item, index) in t('landing.features.stats.list')" :key="index">{{ item }}</li>
+            <li v-for="(item, index) in statsList" :key="index">{{ item }}</li>
           </ul>
         </div>
         <div class="feature-screenshot">
@@ -88,7 +88,7 @@
             {{ t('landing.features.history.description') }}
           </p>
           <ul class="feature-list">
-            <li v-for="(item, index) in t('landing.features.history.list')" :key="index">{{ item }}</li>
+            <li v-for="(item, index) in historyList" :key="index">{{ item }}</li>
           </ul>
         </div>
         <div class="feature-screenshot">
@@ -106,7 +106,7 @@
             {{ t('landing.features.customization.description') }}
           </p>
           <ul class="feature-list">
-            <li v-for="(item, index) in t('landing.features.customization.list')" :key="index">{{ item }}</li>
+            <li v-for="(item, index) in customizationList" :key="index">{{ item }}</li>
           </ul>
         </div>
         <div class="feature-screenshot">
@@ -121,7 +121,7 @@
     <section class="how-it-works-section">
       <h2 class="section-title">{{ t('landing.howItWorks.title') }}</h2>
       <div class="steps">
-        <div class="step" v-for="(step, index) in t('landing.howItWorks.steps')" :key="index">
+        <div class="step" v-for="(step, index) in howItWorksSteps" :key="index">
           <div class="step-number">{{ index + 1 }}</div>
           <h3 class="step-title">{{ step.title }}</h3>
           <p class="step-description">{{ step.description }}</p>
@@ -142,9 +142,17 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
-const { t } = useI18n()
+const { t, tm } = useI18n()
+
+// Получаем массивы для списков
+const liveMatchList = computed(() => tm('landing.features.liveMatch.list') as string[])
+const statsList = computed(() => tm('landing.features.stats.list') as string[])
+const historyList = computed(() => tm('landing.features.history.list') as string[])
+const customizationList = computed(() => tm('landing.features.customization.list') as string[])
+const howItWorksSteps = computed(() => tm('landing.howItWorks.steps') as Array<{ title: string; description: string }>)
 </script>
 
 <style scoped>

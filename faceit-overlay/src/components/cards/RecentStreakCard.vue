@@ -82,14 +82,18 @@ const matchesWithElo = computed(() => {
     return []
   }
   
-  const matches = playerStore.recentMatches.slice(0, 7)
+  // Take 8 matches to calculate ELO diff for the 7th match
+  const matches = playerStore.recentMatches.slice(0, 8)
   const result = []
   
-  for (let i = 0; i < matches.length; i++) {
+  // But only show 7 matches
+  for (let i = 0; i < Math.min(7, matches.length); i++) {
     const match = matches[i]
     const nextMatch = matches[i + 1]
     
     // Calculate ELO diff
+    // Match is newer, nextMatch is older (before this match)
+    // So: current match ELO - previous match ELO = ELO change in this match
     let eloDiff = 0
     if (match.elo !== undefined && nextMatch?.elo !== undefined) {
       eloDiff = match.elo - nextMatch.elo

@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import { API_ENDPOINTS, GAME } from '@/config/constants'
-import type { FaceitUser, PlayerStats, Match, MatchDetails, GroupByStateResponse, OngoingMatch } from '@/types'
+import type { FaceitUser, PlayerStats, Match, MatchDetails, GroupByStateResponse, OngoingMatch, MatchDetailsV2Response } from '@/types'
 
 class FaceitAPI {
   private client: AxiosInstance
@@ -90,11 +90,34 @@ class FaceitAPI {
 
   /**
    * Получить текущий активный матч игрока (если есть)
+   * Проверяет как ONGOING (матч идет), так и READY (игроки подключаются)
    */
   async getOngoingMatch(userId: string): Promise<OngoingMatch | null> {
     const response = await this.getMatchesByState(userId)
+    
+    // Проверяем ONGOING матчи (матч уже идет)
     const ongoingMatches = response.payload.ONGOING || []
-    return ongoingMatches.length > 0 ? ongoingMatches[0] : null
+    if (ongoingMatches.length > 0) {
+      return ongoingMatches[0]
+    }
+    
+    // Если ONGOING нет, проверяем READY (игроки подключаются к серверу)
+    const readyMatches = response.payload.READY || []
+    if (readyMatches.length > 0) {
+      return readyMatches[0]
+    }
+    
+    return null
+  }
+
+  /**
+   * Получить детальную информацию о матче включая вероятность победы
+   */
+  async getMatchDetailsV2(matchId: string): Promise<MatchDetailsV2Response> {
+    const response = await this.client.get<MatchDetailsV2Response>(
+      API_ENDPOINTS.MATCH_DETAILS_V2(matchId)
+    )
+    return response.data
   }
 }
 

@@ -22,7 +22,7 @@ import { computed } from 'vue'
 const { locale } = useI18n()
 
 const languages = [
-  { code: 'uk', name: 'Українська' },
+  { code: 'ua', name: 'Українська' },
   { code: 'ru', name: 'Русский' },
   { code: 'en', name: 'English' }
 ]
@@ -53,11 +53,9 @@ const changeLanguage = (lang: string) => {
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s;
-  font-weight: 500;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
 }
 
 .lang-button:hover {

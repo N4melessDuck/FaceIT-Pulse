@@ -165,6 +165,17 @@ export interface OngoingMatchTeam {
   name: string
   leader: string
   roster: OngoingMatchPlayer[]
+  stats?: {
+    winProbability?: number  // 0.0-1.0 (например 0.51 = 51%)
+    rating?: number
+    skillLevel?: {
+      average: number
+      range: {
+        min: number
+        max: number
+      }
+    }
+  }
 }
 
 export interface OngoingMatchTeamWithStats extends Omit<OngoingMatchTeam, 'roster'> {
@@ -183,16 +194,16 @@ export interface OngoingMatch {
   id: string
   game: string
   region: string
-  gameModeType: string
-  gameModeLabel: {
+  gameModeType?: string
+  gameModeLabel?: {
     en: string
   }
-  entity: {
+  entity?: {
     type: string
     id: string
     name: string
   }
-  entityCustom: {
+  entityCustom?: {
     queueId: string
     parties: Record<string, string[]>
     matcherMatchId: string
@@ -205,7 +216,7 @@ export interface OngoingMatch {
   }
   state: string  // ONGOING, READY, FINISHED
   status: string // LIVE, PENDING
-  playing: boolean
+  playing?: boolean
   createdAt: string
   voting?: {
     map?: {
@@ -236,6 +247,15 @@ export interface GroupByStateResponse {
     READY?: OngoingMatch[]
     FINISHED?: OngoingMatch[]
   }
+  time: number
+  version: string
+}
+
+export interface MatchDetailsV2Response {
+  code: string
+  env: string
+  message: string
+  payload: OngoingMatch  // Детальная информация включает teams.stats.winProbability
   time: number
   version: string
 }

@@ -88,12 +88,139 @@ export default {
       placeholder: 'Enter your nickname'
     },
     size: {
-      label: 'Overlay Size'
+      label: 'Overlay Size',
+      presets: {
+        compact: 'Compact',
+        medium: 'Medium',
+        full: 'Full'
+      }
     },
     cards: {
-      label: 'Card Selection',
+      label: 'Stat Cards',
       selectAll: 'Select All',
-      deselectAll: 'Deselect All'
+      deselectAll: 'Deselect All',
+      noCards: 'No cards available',
+      metadata: {
+        elo: {
+          title: 'ELO & Level',
+          description: 'Current rating and FACEIT level'
+        },
+        winrate: {
+          title: 'Win Rate',
+          description: 'Win percentage'
+        },
+        kd: {
+          title: 'K/D Ratio',
+          description: 'Kill to death ratio'
+        },
+        recentMatches: {
+          title: 'Recent Matches',
+          description: 'Detailed list of last 10 matches'
+        },
+        recentStreak: {
+          title: 'Recent Results',
+          description: 'Last 7 matches (W/L)'
+        },
+        winStreak: {
+          title: 'Streak',
+          description: 'Current win/loss streak'
+        },
+        performance: {
+          title: 'Performance',
+          description: 'ADR, Headshots %, K/R'
+        },
+        maps: {
+          title: 'Maps',
+          description: 'Map statistics'
+        },
+        multiKill: {
+          title: 'Multikills',
+          description: '2K, 3K, 4K, 5K statistics'
+        },
+        mapPerformance: {
+          title: 'Top Maps',
+          description: 'Best maps by win rate'
+        },
+        performanceTrend: {
+          title: 'Form Trend',
+          description: 'K/D and ADR chart'
+        },
+        entryFragging: {
+          title: 'Entry Fragging',
+          description: 'First frag statistics'
+        },
+        mvpAssist: {
+          title: 'MVP & Assists',
+          description: 'MVP rounds and assists'
+        },
+        sessionStats: {
+          title: 'Session',
+          description: 'Recent matches statistics'
+        }
+      }
+    },
+    rotation: {
+      label: 'Card Rotation',
+      enable: 'Enable automatic rotation',
+      interval: 'Change interval (seconds)',
+      animation: 'Transition animation',
+      animations: {
+        fade: 'Smooth fade',
+        slide: 'Slide',
+        none: 'No animation'
+      }
+    },
+    animations: {
+      label: 'Animations',
+      fadeIn: 'Fade in',
+      slideIn: 'Slide in'
+    },
+    opacity: {
+      label: 'Overlay Opacity',
+      levels: {
+        opaque: 'Opaque',
+        almostOpaque: 'Almost opaque',
+        semiTransparent: 'Semi-transparent',
+        transparent: 'Transparent',
+        fullyTransparent: 'fully transparent',
+        opaqueShort: 'opaque'
+      }
+    },
+    actions: {
+      save: 'Save Settings',
+      reset: 'Reset',
+      confirmReset: 'Reset all settings?',
+      saved: '✅ Settings saved!',
+      copyError: 'Failed to copy link'
+    },
+    liveMatch: {
+      updateInterval: 'Update Interval',
+      opacity: 'Opacity',
+      showDuration: 'Show Duration',
+      hideDuration: 'Hide Duration',
+      seconds: 'sec',
+      visibilityCycle: 'Visibility Cycle',
+      showDescription: 'How long the widget is visible',
+      hideDescription: 'How long the widget is hidden',
+      intervals: {
+        '10s': '10 seconds',
+        '30s': '30 seconds',
+        '1m': '1 minute'
+      },
+      info: {
+        title: 'Information',
+        text: 'Live Match widget is shown <strong>only during a match</strong>. Add it to OBS as a separate Browser Source.'
+      },
+      obsSettings: {
+        title: '📺 Recommended OBS settings:',
+        width: 'Width:',
+        height: 'Height:',
+        fps: 'FPS:',
+        fpsValue: '30 (enough)',
+        fullscreen: 'Recommended:',
+        fullscreenValue: 'set to fullscreen',
+        adaptive: 'Widget adapts to window size'
+      }
     },
     preview: {
       title: 'Preview',

@@ -8,7 +8,7 @@
         <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
       </div>
       <div class="text-primary font-bold text-lg flex items-center justify-center gap-2">
-        <span>{{ match.gameModeLabel.en }} • {{ match.entity.name }}</span>
+        <span>{{ match.gameModeLabel?.en || match.game || '5v5' }} • {{ match.entity?.name || 'Matchmaking' }}</span>
         <span v-if="getMapName()" class="text-yellow-400">
           • {{ getMapName() }}
         </span>
@@ -113,7 +113,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ player.stats.kd.toFixed(2) }}</span>
                   <span 
-                    v-if="player.deviation && !isNaN(player.deviation.kd)"
+                    v-if="player.deviation && !isNaN(player.deviation.kd) && Math.round(player.deviation.kd * 10) !== 0"
                     :class="player.deviation.kd >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -126,7 +126,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.winRate) }}%</span>
                   <span 
-                    v-if="player.deviation"
+                    v-if="player.deviation && Math.round(player.deviation.winRate) !== 0"
                     :class="player.deviation.winRate >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -139,7 +139,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.adr) }}</span>
                   <span 
-                    v-if="player.deviation"
+                    v-if="player.deviation && Math.round(player.deviation.adr) !== 0"
                     :class="player.deviation.adr >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -152,7 +152,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.headshots) }}%</span>
                   <span 
-                    v-if="player.deviation"
+                    v-if="player.deviation && Math.round(player.deviation.headshots) !== 0"
                     :class="player.deviation.headshots >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -165,7 +165,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.kast) }}%</span>
                   <span 
-                    v-if="player.deviation"
+                    v-if="player.deviation && Math.round(player.deviation.kast) !== 0"
                     :class="player.deviation.kast >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -253,7 +253,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ player.stats.kd.toFixed(2) }}</span>
                   <span 
-                    v-if="player.deviation && !isNaN(player.deviation.kd)"
+                    v-if="player.deviation && !isNaN(player.deviation.kd) && Math.round(player.deviation.kd * 10) !== 0"
                     :class="player.deviation.kd >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -266,7 +266,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.winRate) }}%</span>
                   <span 
-                    v-if="player.deviation && !isNaN(player.deviation.winRate)"
+                    v-if="player.deviation && !isNaN(player.deviation.winRate) && Math.round(player.deviation.winRate) !== 0"
                     :class="player.deviation.winRate >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -279,7 +279,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.adr) }}</span>
                   <span 
-                    v-if="player.deviation && !isNaN(player.deviation.adr)"
+                    v-if="player.deviation && !isNaN(player.deviation.adr) && Math.round(player.deviation.adr) !== 0"
                     :class="player.deviation.adr >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -292,7 +292,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.headshots) }}%</span>
                   <span 
-                    v-if="player.deviation && !isNaN(player.deviation.headshots)"
+                    v-if="player.deviation && !isNaN(player.deviation.headshots) && Math.round(player.deviation.headshots) !== 0"
                     :class="player.deviation.headshots >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -305,7 +305,7 @@
                 <div class="flex items-center gap-1">
                   <span class="text-white font-bold text-lg">{{ Math.round(player.stats.kast) }}%</span>
                   <span 
-                    v-if="player.deviation && !isNaN(player.deviation.kast)"
+                    v-if="player.deviation && !isNaN(player.deviation.kast) && Math.round(player.deviation.kast) !== 0"
                     :class="player.deviation.kast >= 0 ? 'text-green-400' : 'text-red-400'"
                     class="text-xs font-bold"
                   >
@@ -332,10 +332,10 @@ const match = computed(() => playerStore.currentMatch!)
 function getMatchStatusText(): string {
   if (!match.value) return ''
   
-  if (match.value.status === 'LIVE' && match.value.playing) {
+  if (match.value.state === 'READY') {
+    return 'CONNECTING TO SERVER'
+  } else if (match.value.status === 'LIVE' && match.value.playing !== false) {
     return 'LIVE MATCH'
-  } else if (match.value.state === 'READY') {
-    return 'MATCH READY'
   } else if (match.value.state === 'ONGOING') {
     return 'ONGOING'
   }

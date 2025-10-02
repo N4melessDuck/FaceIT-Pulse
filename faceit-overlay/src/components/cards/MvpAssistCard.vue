@@ -1,39 +1,35 @@
 <template>
   <div class="stat-card glass rounded-xl p-6">
-    <div class="text-sm text-gray-400 font-semibold mb-4">Team Impact</div>
+    <div class="text-sm text-gray-400 font-semibold mb-4">Utility & Support</div>
     
-    <!-- Main Stats -->
-    <div class="grid grid-cols-2 gap-3 mb-3">
-      <!-- MVP -->
-      <div class="bg-yellow-500/10 rounded-lg p-2">
-        <div class="text-xs text-gray-400 mb-1">MVP</div>
-        <div class="text-2xl font-bold text-yellow-400">{{ totalMVPs }}</div>
-        <div class="text-xs text-gray-500">{{ mvpRate }}%</div>
+    <!-- Main Stats Grid -->
+    <div class="grid grid-cols-2 gap-2">
+      <!-- Utility Damage per Round -->
+      <div class="bg-orange-500/10 rounded-lg p-2">
+        <div class="text-xs text-gray-400 mb-1">Utility DMG</div>
+        <div class="text-xl font-bold text-orange-400">{{ utilityDamage || '--' }}</div>
+        <div class="text-xs text-gray-500">per round</div>
       </div>
 
-      <!-- Assists -->
+      <!-- Flashes per Round -->
+      <div class="bg-purple-500/10 rounded-lg p-2">
+        <div class="text-xs text-gray-400 mb-1">Flashes</div>
+        <div class="text-xl font-bold text-purple-400">{{ flashesPerRound || '--' }}</div>
+        <div class="text-xs text-gray-500">per round</div>
+      </div>
+
+      <!-- 1v2 Win Rate -->
       <div class="bg-blue-500/10 rounded-lg p-2">
-        <div class="text-xs text-gray-400 mb-1">Assists</div>
-        <div class="text-2xl font-bold text-blue-400">{{ avgAssists }}</div>
-        <div class="text-xs text-gray-500">per match</div>
+        <div class="text-xs text-gray-400 mb-1">1v2 Clutch</div>
+        <div class="text-xl font-bold text-blue-400">{{ clutch1v2Rate || '--' }}%</div>
+        <div class="text-xs text-gray-500">win rate</div>
       </div>
-    </div>
 
-    <!-- Team Impact Rating -->
-    <div class="mt-3 pt-3 border-t border-gray-700/30">
-      <div class="flex items-center justify-between text-xs">
-        <span class="text-gray-400">Impact</span>
-        <span 
-          :class="[
-            'font-bold',
-            impactRating === 'Excellent' ? 'text-green-400' :
-            impactRating === 'Good' ? 'text-primary' :
-            impactRating === 'Average' ? 'text-yellow-400' :
-            'text-gray-400'
-          ]"
-        >
-          {{ impactRating }}
-        </span>
+      <!-- Enemies Flashed per Round -->
+      <div class="bg-green-500/10 rounded-lg p-2">
+        <div class="text-xs text-gray-400 mb-1">Flash Impact</div>
+        <div class="text-xl font-bold text-green-400">{{ enemiesFlashed || '--' }}</div>
+        <div class="text-xs text-gray-500">enemies/round</div>
       </div>
     </div>
   </div>
@@ -45,42 +41,31 @@ import { usePlayerStore } from '@/stores/player'
 
 const playerStore = usePlayerStore()
 
-// Total matches
-const totalMatches = computed(() => {
-  return parseInt(playerStore.stats?.lifetime?.m1 || '0')
+// k26 - Utility Damage per Round (урон от гранат за раунд)
+const utilityDamage = computed(() => {
+  const value = playerStore.stats?.lifetime?.k26
+  return value ? parseFloat(value).toFixed(1) : null
 })
 
-// Total MVPs - m21
-const totalMVPs = computed(() => {
-  return parseInt(playerStore.stats?.lifetime?.m21 || '0')
+// k24 - Flashes per Round (количество флешек за раунд)
+const flashesPerRound = computed(() => {
+  const value = playerStore.stats?.lifetime?.k24
+  return value ? parseFloat(value).toFixed(2) : null
 })
 
-// Total Assists - m20
-const totalAssists = computed(() => {
-  return parseInt(playerStore.stats?.lifetime?.m20 || '0')
+// k21 - 1v2 Win Rate (винрейт в клатчах 1v2) - значение в виде десятичной дроби, нужно *100
+const clutch1v2Rate = computed(() => {
+  const value = playerStore.stats?.lifetime?.k21
+  if (!value) return null
+  const rate = parseFloat(value)
+  // Если значение < 1, то это десятичная дробь (0.28 = 28%)
+  return rate < 1 ? (rate * 100).toFixed(0) : rate.toFixed(0)
 })
 
-// MVP Rate (% of matches where player got MVP)
-const mvpRate = computed(() => {
-  if (totalMatches.value === 0) return '0'
-  return ((totalMVPs.value / totalMatches.value) * 100).toFixed(1)
-})
-
-// Average Assists per Match
-const avgAssists = computed(() => {
-  if (totalMatches.value === 0) return '0.0'
-  return (totalAssists.value / totalMatches.value).toFixed(1)
-})
-
-// Impact Rating
-const impactRating = computed(() => {
-  const mvpPct = parseFloat(mvpRate.value)
-  const assists = parseFloat(avgAssists.value)
-  
-  if (mvpPct >= 15 || assists >= 5) return 'Excellent'
-  if (mvpPct >= 10 || assists >= 4) return 'Good'
-  if (mvpPct >= 5 || assists >= 3) return 'Average'
-  return 'Below Average'
+// k22 - Enemies Flashed per Round (ослепленных врагов за раунд)
+const enemiesFlashed = computed(() => {
+  const value = playerStore.stats?.lifetime?.k22
+  return value ? parseFloat(value).toFixed(2) : null
 })
 </script>
 

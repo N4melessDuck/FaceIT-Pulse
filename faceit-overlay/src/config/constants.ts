@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
   MATCH_HISTORY: (userId: string, game: string, size: number = 20) => 
     `${API_BASE_URL}/stats/v1/stats/time/users/${userId}/games/${game}?size=${size}&game_mode=5v5`,
   MATCH_DETAILS: (matchId: string) => `${API_BASE_URL}/stats/v3/matches/${matchId}`,
+  MATCH_DETAILS_V2: (matchId: string) => `${API_BASE_URL}/match/v2/match/${matchId}`,
   GROUP_BY_STATE: (userId: string) => `${API_BASE_URL}/match/v1/matches/groupByState?userId=${userId}`
 } as const
 

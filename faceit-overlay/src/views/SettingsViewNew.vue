@@ -54,9 +54,8 @@
                     : 'border-gray-600 bg-gray-700 hover:border-gray-500'
                 ]"
               >
-                <div class="text-white font-semibold mb-1">{{ preset.label }}</div>
+                <div class="text-white font-semibold mb-1">{{ t(`settings.size.presets.${preset.label}`) }}</div>
                 <div class="text-xs text-gray-400 mb-2">{{ preset.dimensions.width }}x{{ preset.dimensions.height }}</div>
-                <div class="text-xs text-gray-500">{{ preset.description }}</div>
               </button>
             </div>
           </div>
@@ -65,7 +64,7 @@
           <div class="bg-gray-800 rounded-lg shadow-xl p-6">
             <div class="flex items-center justify-between mb-4">
               <label class="text-white font-semibold">
-                Карточки статистики ({{settingsStore.activeCards.length}})
+                {{ t('settings.cards.label') }} ({{settingsStore.activeCards.length}})
               </label>
             </div>
 
@@ -73,29 +72,30 @@
               <div
                 v-for="card in settingsStore.settings.cards"
                 :key="card.id"
-                class="flex items-center gap-3 p-3 bg-gray-700 rounded-lg"
+                @click="settingsStore.toggleCard(card.id)"
+                class="flex items-center gap-3 p-3 bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors"
               >
                 <input
                   type="checkbox"
                   :checked="card.enabled"
-                  @change="settingsStore.toggleCard(card.id)"
-                  class="w-5 h-5 text-faceit-orange bg-gray-600 border-gray-500 rounded focus:ring-faceit-orange"
+                  @click.stop
+                  class="w-5 h-5 text-faceit-orange bg-gray-600 border-gray-500 rounded focus:ring-faceit-orange pointer-events-none"
                 />
                 <div class="flex-1">
-                  <div class="text-white font-medium">{{ cardMetadata[card.type]?.title || card.type }}</div>
-                  <div class="text-xs text-gray-400">{{ cardMetadata[card.type]?.description || '' }}</div>
+                  <div class="text-white font-medium">{{ t(`settings.cards.metadata.${card.type}.title`) }}</div>
+                  <div class="text-xs text-gray-400">{{ t(`settings.cards.metadata.${card.type}.description`) }}</div>
                 </div>
               </div>
             </div>
             <div v-else class="text-center text-gray-500 py-4">
-              Нет доступных карточек
+              {{ t('settings.cards.noCards') }}
             </div>
           </div>
 
           <!-- Rotation Settings -->
           <div class="bg-gray-800 rounded-lg shadow-xl p-6">
             <label class="block text-white font-semibold mb-3">
-              Ротация карточек
+              {{ t('settings.rotation.label') }}
             </label>
             
             <div v-if="settingsStore.settings.rotation" class="space-y-4">
@@ -105,13 +105,13 @@
                   type="checkbox"
                   class="w-5 h-5 text-faceit-orange bg-gray-600 border-gray-500 rounded focus:ring-faceit-orange"
                 />
-                <span class="text-white">Включить автоматическую ротацию</span>
+                <span class="text-white">{{ t('settings.rotation.enable') }}</span>
               </label>
 
               <div v-if="settingsStore.settings.rotation.enabled" class="space-y-3">
                 <div>
                   <label class="block text-sm text-gray-400 mb-2">
-                    Интервал смены (секунды)
+                    {{ t('settings.rotation.interval') }}
                   </label>
                   <input
                     v-model.number="settingsStore.settings.rotation.interval"
@@ -124,15 +124,15 @@
 
                 <div>
                   <label class="block text-sm text-gray-400 mb-2">
-                    Анимация перехода
+                    {{ t('settings.rotation.animation') }}
                   </label>
                   <select
                     v-model="settingsStore.settings.rotation.transition"
                     class="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-faceit-orange focus:outline-none"
                   >
-                    <option value="fade">Плавное затухание</option>
-                    <option value="slide">Сдвиг</option>
-                    <option value="none">Без анимации</option>
+                    <option value="fade">{{ t('settings.rotation.animations.fade') }}</option>
+                    <option value="slide">{{ t('settings.rotation.animations.slide') }}</option>
+                    <option value="none">{{ t('settings.rotation.animations.none') }}</option>
                   </select>
                 </div>
               </div>
@@ -142,7 +142,7 @@
           <!-- Animations -->
           <div class="bg-gray-800 rounded-lg shadow-xl p-6">
             <label class="block text-white font-semibold mb-3">
-              Анимации
+              {{ t('settings.animations.label') }}
             </label>
             <div v-if="settingsStore.settings.animations" class="space-y-2">
               <label class="flex items-center gap-3 cursor-pointer">
@@ -151,7 +151,7 @@
                   type="checkbox"
                   class="w-5 h-5 text-faceit-orange bg-gray-600 border-gray-500 rounded focus:ring-faceit-orange"
                 />
-                <span class="text-white">Плавное появление</span>
+                <span class="text-white">{{ t('settings.animations.fadeIn') }}</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
                 <input
@@ -159,7 +159,7 @@
                   type="checkbox"
                   class="w-5 h-5 text-faceit-orange bg-gray-600 border-gray-500 rounded focus:ring-faceit-orange"
                 />
-                <span class="text-white">Появление со сдвигом</span>
+                <span class="text-white">{{ t('settings.animations.slideIn') }}</span>
               </label>
             </div>
           </div>
@@ -167,15 +167,15 @@
           <!-- Opacity Settings -->
           <div class="bg-gray-800 rounded-lg shadow-xl p-6">
             <label class="block text-white font-semibold mb-3">
-              Прозрачность оверлея
+              {{ t('settings.opacity.label') }}
             </label>
             <div class="space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-400">{{ settingsStore.settings.opacity }}%</span>
                 <span class="text-xs text-gray-500">
-                  {{ settingsStore.settings.opacity === 100 ? 'Непрозрачный' : 
-                     settingsStore.settings.opacity >= 75 ? 'Почти непрозрачный' :
-                     settingsStore.settings.opacity >= 50 ? 'Полупрозрачный' : 'Прозрачный' }}
+                  {{ settingsStore.settings.opacity === 100 ? t('settings.opacity.levels.opaque') : 
+                     settingsStore.settings.opacity >= 75 ? t('settings.opacity.levels.almostOpaque') :
+                     settingsStore.settings.opacity >= 50 ? t('settings.opacity.levels.semiTransparent') : t('settings.opacity.levels.transparent') }}
                 </span>
               </div>
               <input
@@ -187,8 +187,8 @@
                 class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-faceit-orange"
               />
               <div class="flex justify-between text-xs text-gray-500">
-                <span>0% (полностью прозрачный)</span>
-                <span>100% (непрозрачный)</span>
+                <span>0% ({{ t('settings.opacity.levels.fullyTransparent') }})</span>
+                <span>100% ({{ t('settings.opacity.levels.opaqueShort') }})</span>
               </div>
             </div>
           </div>
@@ -199,13 +199,13 @@
               @click="saveSettings"
               class="flex-1 px-6 py-3 bg-faceit-orange text-white font-semibold rounded-lg hover:bg-orange-600 transition"
             >
-              Сохранить настройки
+              {{ t('settings.actions.save') }}
             </button>
             <button
               @click="resetToDefaults"
               class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition"
             >
-              Сбросить
+              {{ t('settings.actions.reset') }}
             </button>
           </div>
         </div>
@@ -263,29 +263,78 @@
             </h2>
             
             <!-- Settings -->
-            <div class="space-y-4 mb-4">
-              <div>
-                <label class="block text-gray-300 text-sm mb-2">Частота обновления</label>
-                <select 
-                  v-model.number="settingsStore.settings.liveMatch.updateInterval"
-                  class="w-full bg-gray-900 text-white px-3 py-2 rounded-lg"
-                >
-                  <option :value="10000">10 секунд</option>
-                  <option :value="30000">30 секунд</option>
-                  <option :value="60000">1 минута</option>
-                </select>
+            <div class="space-y-6 mb-6">
+              <!-- Visibility Cycle Settings -->
+              <div class="bg-gray-900/50 rounded-xl p-5 border border-gray-700/50">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  {{ t('settings.liveMatch.visibilityCycle') }}
+                </h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30">
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">
+                      {{ t('settings.liveMatch.showDuration') }}
+                    </label>
+                    <div class="flex items-baseline gap-2">
+                      <input 
+                        v-model.number="settingsStore.settings.liveMatch.showDuration"
+                        type="number"
+                        min="5"
+                        max="120"
+                        step="5"
+                        class="w-20 bg-gray-900 text-white text-2xl font-bold px-3 py-2 rounded-lg border border-gray-600 focus:border-primary focus:outline-none text-center"
+                      />
+                      <span class="text-sm text-gray-500">{{ t('settings.liveMatch.seconds') }}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">{{ t('settings.liveMatch.showDescription') }}</div>
+                  </div>
+                  
+                  <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700/30">
+                    <label class="block text-gray-400 text-xs font-medium mb-2 uppercase tracking-wider">
+                      {{ t('settings.liveMatch.hideDuration') }}
+                    </label>
+                    <div class="flex items-baseline gap-2">
+                      <input 
+                        v-model.number="settingsStore.settings.liveMatch.hideDuration"
+                        type="number"
+                        min="5"
+                        max="300"
+                        step="5"
+                        class="w-20 bg-gray-900 text-white text-2xl font-bold px-3 py-2 rounded-lg border border-gray-600 focus:border-primary focus:outline-none text-center"
+                      />
+                      <span class="text-sm text-gray-500">{{ t('settings.liveMatch.seconds') }}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">{{ t('settings.liveMatch.hideDescription') }}</div>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label class="block text-gray-300 text-sm mb-2">Прозрачность</label>
-                <input 
-                  v-model.number="settingsStore.settings.liveMatch.opacity"
-                  type="range"
-                  min="0"
-                  max="100"
-                  class="w-full"
-                />
-                <div class="text-sm text-gray-400 text-center">{{ settingsStore.settings.liveMatch.opacity }}%</div>
+              <!-- Opacity Setting -->
+              <div class="bg-gray-900/50 rounded-xl p-5 border border-gray-700/50">
+                <h3 class="text-sm font-semibold text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  {{ t('settings.liveMatch.opacity') }}
+                </h3>
+                <div class="flex items-center gap-4">
+                  <input 
+                    v-model.number="settingsStore.settings.liveMatch.opacity"
+                    type="range"
+                    min="0"
+                    max="100"
+                    class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                    style="accent-color: #ff5500;"
+                  />
+                  <div class="min-w-[60px] text-right">
+                    <span class="text-2xl font-bold text-primary">{{ settingsStore.settings.liveMatch.opacity }}</span>
+                    <span class="text-sm text-gray-500">%</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -322,21 +371,18 @@
             <div class="mt-4 space-y-2">
               <!-- Информация -->
               <div class="p-3 bg-gray-900 rounded-lg">
-                <p class="text-gray-400 text-xs">
-                  <strong class="text-blue-400">INFO:</strong> Live Match виджет показывается <strong class="text-white">только во время матча</strong>. 
-                  Добавьте его в OBS как отдельный Browser Source.
-                </p>
+                <p class="text-gray-400 text-xs" v-html="'<strong class=\'text-blue-400\'>INFO:</strong> ' + t('settings.liveMatch.info.text')"></p>
               </div>
               
               <!-- Рекомендуемые настройки OBS -->
               <div class="p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                <h4 class="text-blue-400 font-semibold text-xs mb-2">📺 Рекомендуемые настройки OBS:</h4>
+                <h4 class="text-blue-400 font-semibold text-xs mb-2">{{ t('settings.liveMatch.obsSettings.title') }}</h4>
                 <ul class="text-blue-300 text-xs space-y-1">
-                  <li>• <strong>Ширина:</strong> 1920px (Full HD)</li>
-                  <li>• <strong>Высота:</strong> 1080px</li>
-                  <li>• <strong>FPS:</strong> 30 (достаточно)</li>
-                  <li>• ✅ <strong>Рекомендуется:</strong> поставить на весь экран</li>
-                  <li>• 💡 Виджет адаптируется под размер окна</li>
+                  <li>• <strong>{{ t('settings.liveMatch.obsSettings.width') }}</strong> 1920px (Full HD)</li>
+                  <li>• <strong>{{ t('settings.liveMatch.obsSettings.height') }}</strong> 1080px</li>
+                  <li>• <strong>{{ t('settings.liveMatch.obsSettings.fps') }}</strong> {{ t('settings.liveMatch.obsSettings.fpsValue') }}</li>
+                  <li>• ✅ <strong>{{ t('settings.liveMatch.obsSettings.fullscreen') }}</strong> {{ t('settings.liveMatch.obsSettings.fullscreenValue') }}</li>
+                  <li>• 💡 {{ t('settings.liveMatch.obsSettings.adaptive') }}</li>
                 </ul>
               </div>
             </div>
@@ -351,7 +397,7 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/stores/settings'
-import { SIZE_PRESETS, CARD_METADATA } from '@/types/cards'
+import { SIZE_PRESETS } from '@/types/cards'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
 const { t } = useI18n()
@@ -360,7 +406,6 @@ const copied = ref(false)
 const copiedLiveMatch = ref(false)
 
 const sizePresets = SIZE_PRESETS
-const cardMetadata = CARD_METADATA
 
 onMounted(() => {
   settingsStore.loadFromStorage()
@@ -368,11 +413,11 @@ onMounted(() => {
 
 function saveSettings() {
   settingsStore.saveToStorage()
-  alert('✅ Настройки сохранены!')
+  alert(t('settings.actions.saved'))
 }
 
 function resetToDefaults() {
-  if (confirm('Сбросить все настройки?')) {
+  if (confirm(t('settings.actions.confirmReset'))) {
     settingsStore.resetSettings()
   }
 }
@@ -385,7 +430,7 @@ async function copyUrl() {
       copied.value = false
     }, 2000)
   } catch (err) {
-    alert('Не удалось скопировать ссылку')
+    alert(t('settings.actions.copyError'))
   }
 }
 
@@ -397,7 +442,7 @@ async function copyLiveMatchUrl() {
       copiedLiveMatch.value = false
     }, 2000)
   } catch (err) {
-    alert('Не удалось скопировать ссылку')
+    alert(t('settings.actions.copyError'))
   }
 }
 </script>
