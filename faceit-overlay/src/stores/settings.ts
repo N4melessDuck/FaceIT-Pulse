@@ -171,7 +171,16 @@ export const useSettingsStore = defineStore('settings', () => {
 
   // Загрузка настроек из URL (для overlay страницы)
   function loadFromUrl() {
-    const params = new URLSearchParams(window.location.search)
+    // For hash routing, params are after the hash: /#/overlay?params
+    // Extract query string from hash if it exists, otherwise from search
+    let queryString = window.location.search
+    
+    if (window.location.hash.includes('?')) {
+      // Hash routing: /#/overlay?nickname=...
+      queryString = window.location.hash.split('?')[1]
+    }
+    
+    const params = new URLSearchParams(queryString)
 
     const nickname = params.get('nickname')
     if (nickname) {

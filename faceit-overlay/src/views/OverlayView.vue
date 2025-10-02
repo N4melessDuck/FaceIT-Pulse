@@ -141,7 +141,12 @@ function stopRotation() {
 
 onMounted(async () => {
   // Load settings from URL parameters
+  console.log('🔍 Current URL:', window.location.href)
+  console.log('🔍 Search params:', window.location.search)
+  
   settingsStore.loadFromUrl()
+  
+  console.log('⚙️ Loaded nickname:', settingsStore.settings.nickname)
 
   // Load player data if nickname is provided
   if (settingsStore.settings.nickname) {
