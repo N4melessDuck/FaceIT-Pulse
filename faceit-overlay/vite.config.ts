@@ -4,6 +4,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Base path for GitHub Pages deployment
+  base: '/FaceIT-Pulse/',
   plugins: [vue()],
   resolve: {
     alias: {
