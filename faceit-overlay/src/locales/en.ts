@@ -1,7 +1,7 @@
 export default {
   landing: {
     hero: {
-      title: 'FACEIT Stats Overlay',
+      title: 'FaceIT Pulse',
       subtitle: 'Professional FACEIT statistics right on your screen',
       features: {
         noRegistration: 'No registration',
@@ -66,6 +66,12 @@ export default {
           description: 'Select desired cards and enjoy'
         }
       ]
+    },
+    contact: {
+      title: 'Bug Reports & Suggestions',
+      description: 'Have feedback or encountered an issue? Feel free to contact me.',
+      telegram: 'Telegram',
+      twitter: 'Twitter'
     },
     footerCta: {
       title: 'Ready to Start?',

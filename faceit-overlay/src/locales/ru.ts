@@ -1,7 +1,7 @@
 export default {
   landing: {
     hero: {
-      title: 'FACEIT Stats Overlay',
+      title: 'FaceIT Pulse',
       subtitle: 'Профессиональная статистика FACEIT прямо на вашем экране',
       features: {
         noRegistration: 'Без регистрации',
@@ -66,6 +66,12 @@ export default {
           description: 'Выберите нужные карточки и наслаждайтесь'
         }
       ]
+    },
+    contact: {
+      title: 'Сообщить об ошибке или предложить идею',
+      description: 'Есть замечания или предложения? Можете связаться со мной.',
+      telegram: 'Telegram',
+      twitter: 'Twitter'
     },
     footerCta: {
       title: 'Готовы начать?',

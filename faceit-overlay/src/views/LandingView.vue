@@ -56,9 +56,11 @@
           </ul>
         </div>
         <div class="feature-screenshot">
-          <div class="screenshot-placeholder">
-            <span>{{ t('landing.screenshots.liveMatch') }}</span>
-          </div>
+          <img 
+            src="https://github.com/user-attachments/assets/e186427e-455b-4643-a3aa-a9280e899e62" 
+            :alt="t('landing.screenshots.liveMatch')"
+            class="screenshot-image"
+          />
         </div>
       </div>
 
@@ -74,9 +76,11 @@
           </ul>
         </div>
         <div class="feature-screenshot">
-          <div class="screenshot-placeholder">
-            <span>{{ t('landing.screenshots.stats') }}</span>
-          </div>
+          <img 
+            src="https://github.com/user-attachments/assets/f1a3b0c8-8349-4604-9b16-1a94e2af45d2" 
+            :alt="t('landing.screenshots.stats')"
+            class="screenshot-image"
+          />
         </div>
       </div>
 
@@ -92,9 +96,11 @@
           </ul>
         </div>
         <div class="feature-screenshot">
-          <div class="screenshot-placeholder">
-            <span>{{ t('landing.screenshots.history') }}</span>
-          </div>
+          <img 
+            src="https://github.com/user-attachments/assets/70df6955-cb53-4df7-9346-ecc7bc343964" 
+            :alt="t('landing.screenshots.history')"
+            class="screenshot-image"
+          />
         </div>
       </div>
 
@@ -110,9 +116,11 @@
           </ul>
         </div>
         <div class="feature-screenshot">
-          <div class="screenshot-placeholder">
-            <span>{{ t('landing.screenshots.settings') }}</span>
-          </div>
+          <img 
+            src="https://github.com/user-attachments/assets/0d5c5469-52f7-4960-9b0d-ad59631850e4" 
+            :alt="t('landing.screenshots.settings')"
+            class="screenshot-image"
+          />
         </div>
       </div>
     </section>
@@ -125,6 +133,41 @@
           <div class="step-number">{{ index + 1 }}</div>
           <h3 class="step-title">{{ step.title }}</h3>
           <p class="step-description">{{ step.description }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+      <div class="contact-container">
+        <div class="contact-icon">💬</div>
+        <h3 class="contact-title">{{ t('landing.contact.title') }}</h3>
+        <p class="contact-description">
+          {{ t('landing.contact.description') }}
+        </p>
+        <div class="contact-links">
+          <a 
+            href="https://t.me/nameIess_0" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="contact-link"
+          >
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121L7.78 13.73l-2.955-.924c-.64-.203-.654-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.827z"/>
+            </svg>
+            <span>{{ t('landing.contact.telegram') }}</span>
+          </a>
+          <a 
+            href="https://x.com/N4melessDuck" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="contact-link"
+          >
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <span>{{ t('landing.contact.twitter') }}</span>
+          </a>
         </div>
       </div>
     </section>
@@ -322,6 +365,20 @@ const howItWorksSteps = computed(() => tm('landing.howItWorks.steps') as Array<{
   justify-content: center;
 }
 
+.screenshot-image {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.screenshot-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 48px rgba(255, 107, 53, 0.2);
+}
+
 .screenshot-placeholder {
   width: 100%;
   height: 100%;
@@ -433,5 +490,110 @@ const howItWorksSteps = computed(() => tm('landing.howItWorks.steps') as Array<{
     top: 1rem;
     right: 1rem;
   }
+
+  .contact-links {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .contact-link {
+    width: 100%;
+  }
+}
+
+/* Contact Section */
+.contact-section {
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.contact-container {
+  max-width: 600px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.contact-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+}
+
+.contact-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.contact-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-description {
+  font-size: 1.1rem;
+  color: #94a3b8;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  backdrop-filter: blur(10px);
+}
+
+.contact-link svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: all 0.3s;
+}
+
+.contact-link:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 107, 53, 0.5);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.2);
+  color: #ff6b35;
+}
+
+.contact-link:hover svg {
+  color: #ff6b35;
+  transform: scale(1.1);
 }
 </style>
