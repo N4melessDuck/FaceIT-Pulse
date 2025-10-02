@@ -10,7 +10,7 @@
       ]"
       :title="lang.name"
     >
-      {{ lang.flag }} {{ lang.code.toUpperCase() }}
+      {{ lang.code.toUpperCase() }}
     </button>
   </div>
 </template>
@@ -22,9 +22,9 @@ import { computed } from 'vue'
 const { locale } = useI18n()
 
 const languages = [
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-  { code: 'uk', name: 'Українська', flag: '🇺🇦' },
-  { code: 'en', name: 'English', flag: '🇬🇧' }
+  { code: 'uk', name: 'Українська' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'en', name: 'English' }
 ]
 
 const currentLocale = computed(() => locale.value)
