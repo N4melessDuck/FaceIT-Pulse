@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FACEIT Stats Overlay</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Настройка никнейма -->
+    <div id="setup-screen" class="screen">
+        <div class="setup-container">
+            <h1>FACEIT Stats Overlay</h1>
+            <p class="subtitle">Введите никнейм для отслеживания статистики</p>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="nickname-input" 
+                    placeholder="Введите FACEIT никнейм"
+                    autocomplete="off"
+                >
+                <button id="start-btn">Начать</button>
+            </div>
+            <div id="setup-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Основной экран со статистикой -->
+    <div id="stats-screen" class="screen hidden">
+        <!-- Хедер с никнеймом и ELO -->
+        <div class="header">
+            <div class="player-info">
+                <img id="player-avatar" class="avatar" src="" alt="Avatar">
+                <div class="player-details">
+                    <h2 id="player-nickname">Loading...</h2>
+                    <div class="elo-container">
+                        <span class="elo-label">ELO:</span>
+                        <span id="player-elo" class="elo-value">----</span>
+                    </div>
+                </div>
+            </div>
+            <button id="change-player-btn" class="icon-btn" title="Сменить игрока">⚙️</button>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-container">
+            <!-- Общая статистика -->
+            <div class="stats-section">
+                <h3 class="section-title">Общая статистика</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Винрейт</span>
+                        <span id="winrate" class="stat-value">--%</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Avg K/D</span>
+                        <span id="avg-kd" class="stat-value">-.--</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Avg Kills</span>
+                        <span id="avg-kills" class="stat-value">--</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Avg Deaths</span>
+                        <span id="avg-deaths" class="stat-value">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Последние матчи -->
+            <div class="stats-section">
+                <h3 class="section-title">Последние матчи</h3>
+                <div id="recent-matches" class="matches-list">
+                    <div class="loading">Загрузка матчей...</div>
+                </div>
+            </div>
+
+            <!-- Статус обновления -->
+            <div class="update-status">
+                <span id="update-time">Обновлено: никогда</span>
+                <span id="status-indicator" class="status-dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="app.js"></script>
+</body>
+</html>
