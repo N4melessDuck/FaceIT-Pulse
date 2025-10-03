@@ -1,12 +1,14 @@
 <template>
   <div class="landing-page">
-    <!-- Language Switcher -->
-    <div class="lang-switcher-container">
+    <!-- Language Switcher / Navigation -->
+    <nav class="lang-switcher-container" role="navigation" aria-label="Language and site navigation">
       <LanguageSwitcher />
-    </div>
+    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
+    <!-- Main Content -->
+    <main role="main">
+      <!-- Hero Section -->
+      <section class="hero-section" aria-label="Hero section">
       <!-- Video Background -->
       <div class="video-background">
         <iframe
@@ -191,6 +193,46 @@
         {{ t('landing.footerCta.button') }}
       </router-link>
     </section>
+
+    </main>
+
+    <!-- SEO Footer -->
+    <footer class="seo-footer" role="contentinfo">
+      <div class="seo-content">
+        <h3 class="seo-title">About FaceIT Pulse</h3>
+        <p class="seo-description">
+          FaceIT Pulse is a free, open-source statistics overlay tool designed for Counter-Strike 2 (CS2) streamers and FACEIT players. 
+          Display real-time stats including ELO rating, K/D ratio, win rate, match history, and performance trends directly on your stream. 
+          Perfect for OBS Studio, Streamlabs, and other streaming software. No registration, API keys, or complex setup required.
+        </p>
+        
+        <div class="seo-keywords">
+          <h4 class="keywords-title">Features:</h4>
+          <ul class="keywords-list">
+            <li>Real-time FACEIT statistics</li>
+            <li>Live match tracking with team ELO</li>
+            <li>Comprehensive player stats (K/D, win rate, streaks)</li>
+            <li>Match history and performance analytics</li>
+            <li>Easy OBS browser source integration</li>
+            <li>Customizable overlay cards</li>
+            <li>Multi-language support (English, Russian, Ukrainian)</li>
+            <li>Free and open-source</li>
+          </ul>
+        </div>
+
+        <div class="seo-links">
+          <router-link to="/settings" class="seo-link">Overlay Generator</router-link>
+          <span class="separator">•</span>
+          <a href="https://github.com/N4melessDuck/FaceIT-Pulse" target="_blank" rel="noopener noreferrer" class="seo-link">GitHub</a>
+          <span class="separator">•</span>
+          <a href="https://www.faceit.com" target="_blank" rel="noopener noreferrer" class="seo-link">FACEIT</a>
+        </div>
+
+        <p class="copyright">
+          © 2025 FaceIT Pulse. Made with ❤️ for CS2 community.
+        </p>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -664,5 +706,98 @@ const howItWorksSteps = computed(() => tm('landing.howItWorks.steps') as Array<{
 .contact-link:hover svg {
   color: #ff6b35;
   transform: scale(1.1);
+}
+
+/* SEO Footer */
+.seo-footer {
+  background: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid rgba(255, 107, 53, 0.2);
+  padding: 4rem 2rem 2rem;
+  margin-top: 4rem;
+}
+
+.seo-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #cbd5e1;
+}
+
+.seo-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.seo-description {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  color: #94a3b8;
+}
+
+.seo-keywords {
+  margin-bottom: 2rem;
+}
+
+.keywords-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.keywords-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.keywords-list li {
+  padding: 0.5rem 0;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.keywords-list li::before {
+  content: "✓";
+  color: #ff6b35;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.seo-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.seo-link {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 500;
+}
+
+.seo-link:hover {
+  color: #ff6b35;
+}
+
+.separator {
+  color: #475569;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 </style>
